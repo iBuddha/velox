@@ -30,6 +30,9 @@ class HdfsFileSystem::Impl {
     auto builder = hdfsNewBuilder();
     hdfsBuilderSetNameNode(builder, endpoint.host.c_str());
     hdfsBuilderSetNameNodePort(builder, atoi(endpoint.port.data()));
+    hdfsBuilderConfSetStr(builder, "hadoop.security.authentication", "kerberos");
+    hdfsBuilderConfSetStr(builder, "hadoop.security.authorization", "true");
+    LOG(INFO) << "create hdfs client with kerberos support";
     hdfsClient_ = hdfsBuilderConnect(builder);
     hdfsFreeBuilder(builder);
     VELOX_CHECK_NOT_NULL(
